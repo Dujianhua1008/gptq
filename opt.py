@@ -21,6 +21,7 @@ def get_opt(model):
     return model
 
 @torch.no_grad()
+# 顺序量化
 def opt_sequential(model, dataloader, dev):
     print('Starting ...')
 
@@ -30,6 +31,7 @@ def opt_sequential(model, dataloader, dev):
 
     model.model.decoder.embed_tokens = model.model.decoder.embed_tokens.to(dev) 
     model.model.decoder.embed_positions = model.model.decoder.embed_positions.to(dev)
+    # 检查模型是否具有属性 project-out
     if hasattr(model.model.decoder, 'project_out') and model.model.decoder.project_out:
         model.model.decoder.project_out = model.model.decoder.project_out.to(dev) 
     if hasattr(model.model.decoder, 'project_in') and model.model.decoder.project_in:
@@ -77,8 +79,10 @@ def opt_sequential(model, dataloader, dev):
     for i in range(len(layers)):
         layer = layers[i].to(dev)
 
+# 递归返回模型的liner CONV2D 层
         subset = find_layers(layer)
         gptq = {}
+        
         for name in subset:
             gptq[name] = GPTQ(subset[name])
             gptq[name].quantizer = Quantizer()
@@ -444,12 +448,13 @@ if __name__ == '__main__':
     dataloader, testloader = get_loaders(
         args.dataset, nsamples=args.nsamples, seed=args.seed, model=args.model, seqlen=model.seqlen
     )
-
+# 运行 BaseLine-RTN 对比
     if args.wbits < 16 and not args.nearest:
         tick = time.time()
         quantizers = opt_sequential(model, dataloader, DEV)
         print(time.time() - tick)
 
+# 基准测试的tokens 数量大小 int
     if args.benchmark:
         gpus = [torch.device('cuda:%d' % i) for i in range(torch.cuda.device_count())]
         if len(gpus) > 1:

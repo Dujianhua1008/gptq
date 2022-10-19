@@ -1,3 +1,4 @@
+# GPQT的高效实现
 import math
 import time
 
@@ -9,7 +10,7 @@ from quant import *
 
 
 DEBUG = False 
-
+# 禁用混合精度FP32 进行计算
 torch.backends.cuda.matmul.allow_tf32 = False
 torch.backends.cudnn.allow_tf32 = False
 
@@ -26,6 +27,7 @@ class GPTQ:
             W = W.t()
         self.rows = W.shape[0]
         self.columns = W.shape[1]
+        # Hession 矩阵
         self.H = torch.zeros((self.columns, self.columns), device=self.dev)
         self.nsamples = 0
 
