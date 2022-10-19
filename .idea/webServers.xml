@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="8e1209fc-0e92-43d6-8490-161de84dbcb5" name="dujh-gptq">
+        <fileTransfer rootFolder="/workspace4/home/dujh/gptq" accessType="SFTP" host="10.105.0.3" port="32635" sshConfigId="86012799-0392-4b30-8688-22ec815712a1" sshConfig="dujh@10.105.0.3:32635 password">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>
