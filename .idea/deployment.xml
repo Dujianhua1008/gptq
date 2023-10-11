@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="PublishConfigData" autoUpload="Always" serverName="dujh@10.105.0.3:32635 password (3)">
+    <serverData>
+      <paths name="dujh-gptq">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/" local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="dujh@10.105.0.3:32635 password">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/workspace4/home/dujh/gptq" local="$PROJECT_DIR$" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="dujh@10.105.0.3:32635 password (2)">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/tmp/pycharm_project_704" local="$PROJECT_DIR$" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="dujh@10.105.0.3:32635 password (3)">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/workspace4/home/dujh" local="$PROJECT_DIR$" />
+          </mappings>
+        </serverdata>
+      </paths>
+    </serverData>
+    <option name="myAutoUpload" value="ALWAYS" />
+  </component>
+</project>
