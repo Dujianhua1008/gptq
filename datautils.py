@@ -8,7 +8,10 @@ def set_seed(seed):
 
 
 def get_wikitext2(nsamples, seed, seqlen, model):
+    import ssl
     from datasets import load_dataset
+    # ssl._create_default_https_context = ssl._create_unverified_context
+    ssl._create_default_https_context = ssl._create_unverified_context
     traindata = load_dataset('wikitext', 'wikitext-2-raw-v1', split='train')
     testdata = load_dataset('wikitext', 'wikitext-2-raw-v1', split='test')
 
@@ -53,13 +56,31 @@ def get_ptb(nsamples, seed, seqlen, model):
 
 def get_c4(nsamples, seed, seqlen, model):
     from datasets import load_dataset
+    from datasets import load_from_disk
+    import os
+    import re
+    import ssl
+    ssl._create_default_https_context = ssl._create_unverified_context
+    def get_files_in_directory(directory, keyword):
+        file_list = []
+        for file in os.listdir(directory):
+            if re.search(keyword, file):
+                file_list.append(os.path.join(directory, file))
+        return file_list
+
+    traindata_directory = './c4/realnewslike/'
+
+    traindata_path = get_files_in_directory(traindata_directory, r'train')
+    valdata_path = get_files_in_directory(traindata_directory, r'validation')
+
+    # traindata = load_from_disk(traindata_directory)
     traindata = load_dataset(
-        'allenai/c4', 'allenai--c4', data_files={'train': 'en/c4-train.00000-of-01024.json.gz'}, split='train'
+        'json', data_files={'train': traindata_path}, split='train'
     )
     valdata = load_dataset(
-        'allenai/c4', 'allenai--c4', data_files={'validation': 'en/c4-validation.00000-of-00008.json.gz'}, split='validation'
+        'json', data_files={'validation': valdata_path}, split='validation'
     )
-
+ 
     from transformers import AutoTokenizer
     tokenizer = AutoTokenizer.from_pretrained(model, use_fast=False)
 
@@ -72,7 +93,7 @@ def get_c4(nsamples, seed, seqlen, model):
             trainenc = tokenizer(traindata[i]['text'], return_tensors='pt')
             if trainenc.input_ids.shape[1] >= seqlen:
                 break
-        i = random.randint(0, trainenc.input_ids.shape[1] - seqlen - 1)
+        i = random.randint(0, trainenc.input_ids.shape[1] - seqlen)
         j = i + seqlen
         inp = trainenc.input_ids[:, i:j]
         tar = inp.clone()
@@ -122,6 +143,7 @@ def get_ptb_new(nsamples, seed, seqlen, model):
     return trainloader, testenc
 
 def get_c4_new(nsamples, seed, seqlen, model):
+   
     from datasets import load_dataset
     traindata = load_dataset(
         'allenai/c4', 'allenai--c4', data_files={'train': 'en/c4-train.00000-of-01024.json.gz'}, split='train'
@@ -163,13 +185,14 @@ def get_c4_new(nsamples, seed, seqlen, model):
 def get_loaders(
     name, nsamples=128, seed=0, seqlen=2048, model=''
 ):
+    if 'c4' in name:
+        if 'new' in name:
+            return get_c4_new(nsamples, seed, seqlen, model)
+        return get_c4(nsamples, seed, seqlen, model)
     if 'wikitext2' in name:
         return get_wikitext2(nsamples, seed, seqlen, model)
     if 'ptb' in name:
         if 'new' in name:
             return get_ptb_new(nsamples, seed, seqlen, model)
         return get_ptb(nsamples, seed, seqlen, model)
-    if 'c4' in name:
-        if 'new' in name:
-            return get_c4_new(nsamples, seed, seqlen, model)
-        return get_c4(nsamples, seed, seqlen, model)
+    
