@@ -63,6 +63,7 @@ class GPTQ:
         self, blocksize=128, percdamp=.01, groupsize=-1, actorder=False, static_groups=False
     ):
         W = self.layer.weight.data.clone()
+        # 转置矩阵 将张量 转为二维矩阵 
         if isinstance(self.layer, nn.Conv2d):
             W = W.flatten(1)
         if isinstance(self.layer, transformers.Conv1D):
